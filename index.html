@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>期末考伴讀 KTV - 人際關係與協商</title>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            /* Prevent text selection on mobile */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            height: 100vh;
+            /* iOS Safari 100vh fix */
+            height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-color) 70%);
+        }
+
+        header {
+            width: 100%;
+            padding: 15px 10px;
+            text-align: center;
+            background: var(--glass-bg);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #00ffcc, #00bfff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            width: 100%;
+            padding: 15px;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .player-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            background: #000;
+        }
+
+        audio {
+            width: 100%;
+            display: block;
+            outline: none;
+        }
+
+        /* Customize native audio player for webkit to look cleaner if possible */
+        audio::-webkit-media-controls-enclosure {
+            border-radius: 0;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .btn-action {
+            width: 100%;
+            background: #ff8c00;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        .lyrics-section {
+            flex: 1;
+            position: relative;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            /* Inner shadow for depth */
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .lyrics-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 50% 20px; /* High padding so active line stays centered */
+            scroll-behavior: smooth;
+        }
+
+        .lyrics-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for cleaner mobile look */
+        }
+
+        .lyric-line {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin: 15px 0;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            /* Optimize for mobile taps */
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .lyric-line.active {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>人際關係與協商 - KTV</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="player-section">
+            <div class="video-container">
+                <audio id="audioPlayer" controls playsinline>
+                    <source src="人際女生渾厚.mp3" type="audio/mpeg">
+                    您的瀏覽器不支援音樂播放。
+                </audio>
+            </div>
+            <button id="btnSkipIntro" class="btn-action">🎤 開始唱</button>
+        </div>
+
+        <div class="lyrics-section">
+            <div class="lyrics-container" id="lyricsContainer">
+                <!-- Lyrics will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Use the perfectly aligned timestamps we manually calibrated
+        const lyrics = [
+            { time: 0.00, text: "期末考，人際關係與協商，" },
+            { time: 5.00, text: "問答題重點，我們現在就背上！" },
+            { time: 15.00, text: "Lewin Miller 說，趨避衝突有四種，" },
+            { time: 25.00, text: "雙趨衝突、雙避衝突要懂，" },
+            { time: 32.00, text: "還有趨避衝突、跟雙多趨避衝突。" },
+            { time: 39.00, text: "處理人際衝突，有五種模式可以做：" },
+            { time: 46.00, text: "退縮、投降、攻擊、跟說服，" },
+            { time: 53.00, text: "最後一個是，問題解決式的討論。" },
+            { time: 57.00, text: "溝通的困難，心理性障礙有四類：" },
+            { time: 64.00, text: "嫉妒、情緒不穩、不當歸因、失面子，這些都不對。" },
+            { time: 73.00, text: "印象性障礙有三種，請你仔細聽：" },
+            { time: 79.00, text: "第一印象、刻板印象、跟月暈效應。" },
+            { time: 87.00, text: "上司與部屬的人際關係，有四個特性：" },
+            { time: 93.00, text: "互助性、互依性、互補性、互惠性，團隊才會贏。" },
+            { time: 101.00, text: "洞悉上司人品，五大重點要看清：" },
+            { time: 108.00, text: "人品如何、工作能力如何、情報的擁有度、價值觀、人物氣度。" },
+            { time: 114.00, text: "與不喜歡的同事，要怎麼相處？" },
+            { time: 121.00, text: "不要無視對方的存在，盡量公平地與對方相處，" },
+            { time: 129.00, text: "不要在背後說對方的壞話，不要假裝喜歡對方。" },
+            { time: 141.00, text: "增進商業關係，有五個原則要記住：" },
+            { time: 145.00, text: "洞察客戶心理、確實遵守約定，" },
+            { time: 148.00, text: "適度容忍客戶的無理要求，" },
+            { time: 151.00, text: "調整價值判斷基準差異，掌握客戶真意善解人意。" },
+            { time: 158.00, text: "找尋職業的方法，有這六種：" },
+            { time: 161.00, text: "父母親戚或朋友的影響，還有閱讀和研究，" },
+            { time: 165.50, text: "與生俱來的機會，或是出於機會，" },
+            { time: 169.00, text: "藉由姿商和測驗的發現，和一個能相容共存的人配合。" },
+            { time: 176.00, text: "個人平衡職業與生活方式的原則，八大規劃不能漏：" },
+            { time: 181.50, text: "健康身心、人際規劃、婚姻規劃、家庭規劃，" },
+            { time: 187.00, text: "理財規劃、生命管理、休閒規劃、就業規劃，八項全都有。" },
+            { time: 192.00, text: "人際技能的重要性，具有四方面的功能：" },
+            { time: 198.00, text: "減輕寂寞、尋求刺激、滿足需求、增進自我了解。" },
+            { time: 205.00, text: "最後，克服害羞的方法，有六個重點：" },
+            { time: 209.00, text: "設定目標、表現溫暖和友善，" },
+            { time: 213.00, text: "打電話給陌生人、和陌生人面對面交談，" },
+            { time: 219.00, text: "向陌生人打招呼、注意自己的衣著和裝扮。" },
+            { time: 227.00, text: "重點全都在這，字字句句沒漏接，" },
+            { time: 234.00, text: "反覆聽幾遍，期末一定高分過關！" }
+        ];
+
+        let activeIndex = -1;
+        const player = document.getElementById('audioPlayer');
+        const container = document.getElementById('lyricsContainer');
+
+        function renderLyrics() {
+            container.innerHTML = '';
+            lyrics.forEach((line, index) => {
+                const div = document.createElement('div');
+                div.className = 'lyric-line';
+                div.id = `line-${index}`;
+                div.textContent = line.text;
+                
+                // Allow tapping to jump to that part of the song
+                div.addEventListener('click', () => {
+                    player.currentTime = line.time;
+                    player.play();
+                });
+                
+                container.appendChild(div);
+            });
+        }
+
+        function updateLyricsHighlight(currentTime) {
+            let newActiveIndex = -1;
+            for (let i = 0; i < lyrics.length; i++) {
+                if (currentTime >= lyrics[i].time) {
+                    newActiveIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (newActiveIndex !== activeIndex && newActiveIndex !== -1) {
+                if (activeIndex !== -1) {
+                    const oldEl = document.getElementById(`line-${activeIndex}`);
+                    if (oldEl) oldEl.classList.remove('active');
+                }
+                activeIndex = newActiveIndex;
+                const activeEl = document.getElementById(`line-${activeIndex}`);
+                if (activeEl) {
+                    activeEl.classList.add('active');
+                    // Scroll to center smoothly
+                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        player.addEventListener('timeupdate', () => {
+            updateLyricsHighlight(player.currentTime);
+        });
+
+        // "Start Singing" Button
+        document.getElementById('btnSkipIntro').addEventListener('click', () => {
+            // Jump to 1 second before the first lyric
+            player.currentTime = Math.max(0, lyrics[0].time - 0.5);
+            player.play();
+        });
+
+        // Initialize
+        renderLyrics();
+
+    </script>
+</body>
+</html>
