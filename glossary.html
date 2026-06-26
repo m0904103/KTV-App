@@ -107,19 +107,14 @@
             background-color: rgba(255,255,255,0.1);
         }
 
-        .control-panel {
-            display: flex;
-            gap: 10px;
-        }
-
         .btn-action {
-            flex: 1;
+            width: 100%;
             background: #ff8c00;
             color: white;
             padding: 12px;
             border: none;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
@@ -128,17 +123,6 @@
         
         .btn-action:active {
             transform: scale(0.98);
-        }
-
-        .btn-sync {
-            flex: 0.5;
-            background: #444;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
         }
 
         .lyrics-section {
@@ -184,46 +168,6 @@
             text-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
             transform: scale(1.05);
         }
-
-        .lyric-line.syncing {
-            color: #00ffcc;
-            text-shadow: 0 0 20px #00ffcc;
-        }
-
-        /* Sync Mode Overlay */
-        #syncOverlay {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 100;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .tap-area {
-            width: 100%;
-            height: 200px;
-            background: rgba(255,0,127,0.3);
-            border: 2px dashed #ff007f;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .tap-area:active {
-            background: rgba(255,0,127,0.6);
-        }
     </style>
 </head>
 <body>
@@ -245,34 +189,18 @@
                     您的瀏覽器不支援音樂播放。
                 </audio>
             </div>
-            <div class="control-panel">
-                <button id="btnSkipIntro" class="btn-action">🎤 直接開唱</button>
-                <button id="btnOpenSync" class="btn-sync">⏱️ 錄製時間軸</button>
-            </div>
+            <button id="btnSkipIntro" class="btn-action">🎤 開始唱</button>
         </div>
 
         <div class="lyrics-section">
             <div class="lyrics-container" id="lyricsContainer">
                 <!-- Lyrics injected here -->
             </div>
-            
-            <div id="syncOverlay">
-                <h2 style="color: #00ffcc; margin-bottom: 10px;">時間軸校正模式</h2>
-                <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">
-                    請點擊下方紅色區塊或按【空白鍵】，當歌手唱到「發綠光」的那一行時就按一下！
-                </p>
-                <button id="btnStartSync" style="padding: 10px 20px; background: #00ffcc; color: black; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-bottom: 10px;">▶️ 開始音樂並錄製</button>
-                <button id="btnCancelSync" style="padding: 10px 20px; background: #444; color: white; border: none; border-radius: 8px;">取消</button>
-                
-                <div id="tapArea" class="tap-area">
-                    👆 點這裡打節拍！
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        const initialLyrics = [
+        const lyrics = [
             { time: 0.00, text: "Ooh... 接下來，我們針對解釋名詞～" },
             { time: 10.00, text: "這些魔王題，你一定要記熟～" },
             { time: 18.00, text: "跟著我的節奏背下來，我們現在就開始吧..." },
@@ -307,32 +235,9 @@
             { time: 177.00, text: "All Pass！一起高分過關～ Oh Yeah～" }
         ];
 
-        let lyrics = [];
         let activeIndex = -1;
-        let isSyncing = false;
-        let currentSyncIndex = 0;
-
         const player = document.getElementById('audioPlayer');
         const container = document.getElementById('lyricsContainer');
-        const syncOverlay = document.getElementById('syncOverlay');
-        const tapArea = document.getElementById('tapArea');
-
-        function loadLyrics() {
-            const saved = localStorage.getItem('karaoke_glossary_sync_v1');
-            if (saved) {
-                lyrics = JSON.parse(saved);
-            } else {
-                lyrics = JSON.parse(JSON.stringify(initialLyrics));
-                for(let i=0; i<lyrics.length; i++) {
-                    lyrics[i].time = 9999; 
-                }
-            }
-            renderLyrics();
-        }
-
-        function saveLyrics() {
-            localStorage.setItem('karaoke_glossary_sync_v1', JSON.stringify(lyrics));
-        }
 
         function renderLyrics() {
             container.innerHTML = '';
@@ -343,10 +248,8 @@
                 div.textContent = line.text;
                 
                 div.addEventListener('click', () => {
-                    if (!isSyncing && line.time !== null && line.time !== 9999) {
-                        player.currentTime = line.time;
-                        player.play();
-                    }
+                    player.currentTime = line.time;
+                    player.play();
                 });
                 
                 container.appendChild(div);
@@ -354,7 +257,6 @@
         }
 
         function updateLyricsHighlight(currentTime) {
-            if (isSyncing) return;
             let newActiveIndex = -1;
             for (let i = 0; i < lyrics.length; i++) {
                 if (currentTime >= lyrics[i].time) {
@@ -379,95 +281,17 @@
         }
 
         player.addEventListener('timeupdate', () => {
-            if (!isSyncing) {
-                updateLyricsHighlight(player.currentTime);
-            }
+            updateLyricsHighlight(player.currentTime);
         });
 
-        // Skip Intro Button
         document.getElementById('btnSkipIntro').addEventListener('click', () => {
-            if (lyrics[0] && lyrics[0].time !== 9999) {
+            if (lyrics[0]) {
                 player.currentTime = Math.max(0, lyrics[0].time - 0.5);
                 player.play();
-            } else {
-                alert("您還沒有錄製時間軸！請點擊『⏱️ 錄製時間軸』自己打節拍喔！");
             }
         });
 
-        // --- Sync Mode Logic ---
-        document.getElementById('btnOpenSync').addEventListener('click', () => {
-            syncOverlay.style.display = 'flex';
-        });
-
-        document.getElementById('btnCancelSync').addEventListener('click', () => {
-            endSync();
-        });
-
-        document.getElementById('btnStartSync').addEventListener('click', () => {
-            startSync();
-        });
-
-        function startSync() {
-            isSyncing = true;
-            currentSyncIndex = 0;
-            document.querySelectorAll('.lyric-line').forEach(el => el.classList.remove('active', 'syncing'));
-            
-            const targetEl = document.getElementById(`line-${currentSyncIndex}`);
-            if(targetEl) {
-                targetEl.classList.add('syncing');
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            
-            player.currentTime = 0;
-            player.play();
-            document.getElementById('btnStartSync').textContent = '重新開始';
-        }
-
-        function endSync() {
-            isSyncing = false;
-            syncOverlay.style.display = 'none';
-            player.pause();
-            document.querySelectorAll('.lyric-line').forEach(el => el.classList.remove('syncing'));
-            saveLyrics();
-        }
-
-        function registerTap(e) {
-            if (e) e.preventDefault();
-            if (!isSyncing) return;
-            
-            if (currentSyncIndex < lyrics.length) {
-                lyrics[currentSyncIndex].time = player.currentTime;
-                
-                const currEl = document.getElementById(`line-${currentSyncIndex}`);
-                if(currEl) currEl.classList.remove('syncing');
-                
-                currentSyncIndex++;
-                
-                if (currentSyncIndex < lyrics.length) {
-                    const nextEl = document.getElementById(`line-${currentSyncIndex}`);
-                    if(nextEl) {
-                        nextEl.classList.add('syncing');
-                        nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                } else {
-                    alert('✅ 錄製完成！為您存檔。');
-                    endSync();
-                }
-            }
-        }
-
-        tapArea.addEventListener('touchstart', registerTap);
-        tapArea.addEventListener('mousedown', registerTap);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && isSyncing) {
-                e.preventDefault();
-                registerTap();
-            }
-        });
-
-        loadLyrics();
-
+        renderLyrics();
     </script>
 </body>
 </html>
