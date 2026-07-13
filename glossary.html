@@ -2,296 +2,149 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>解釋名詞大挑戰 KTV - 人際關係與協商</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚠️ 檔案已銷毀</title>
     <style>
-        :root {
-            --primary: #ff007f;
-            --bg-color: #0d0d12;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        * {
-            box-sizing: border-box;
+        body {
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            -webkit-user-select: none;
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
             user-select: none;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: white;
-            height: 100vh;
-            height: 100dvh; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #2e1a26 0%, var(--bg-color) 70%);
-        }
-
-        header {
-            width: 100%;
-            padding: 15px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--glass-bg);
-            border-bottom: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
+        .container {
+            text-align: center;
             z-index: 10;
         }
 
-        .header-title {
-            text-align: left;
-            flex: 1;
-        }
-
         h1 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, #ff007f, #ff8c00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            color: #ff3333;
+            text-shadow: 0 0 15px #ff0000;
+            margin-bottom: 20px;
+            animation: glitch 0.5s infinite;
         }
 
-        .nav-btn {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-left: 10px;
+        p {
+            font-size: 1.5rem;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
         }
 
-        .main-container {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            width: 100%;
-            padding: 15px;
-            gap: 15px;
-            overflow: hidden;
+        .warning {
+            font-size: 1.2rem;
+            color: #aaaaaa;
+            line-height: 1.8;
+            max-width: 80%;
+            margin: 0 auto;
+            border: 1px dashed #555;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.05);
         }
 
-        .player-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .video-container {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--glass-border);
-            background: #000;
-        }
-
-        audio {
-            width: 100%;
-            display: block;
-            outline: none;
-        }
-
-        audio::-webkit-media-controls-enclosure {
-            border-radius: 0;
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .btn-action {
-            width: 100%;
-            background: #ff8c00;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-action:active {
-            transform: scale(0.98);
-        }
-
-        .lyrics-section {
-            flex: 1;
-            position: relative;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .lyrics-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 50% 20px; 
-            scroll-behavior: smooth;
-        }
-
-        .lyrics-container::-webkit-scrollbar {
-            display: none; 
-        }
-
-        .lyric-line {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.3);
-            margin: 15px 0;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            line-height: 1.5;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .lyric-line.active {
-            color: #fff;
-            font-size: 1.4rem;
+        .warning span {
+            color: #ffcc00;
             font-weight: bold;
-            text-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
-            transform: scale(1.05);
+        }
+
+        /* Explosion sequence animation */
+        .explosion-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffffff 0%, #ffaa00 30%, #ff0000 60%, rgba(0,0,0,0) 100%);
+            animation: explode 2.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            animation: whiteFlash 2.5s forwards;
+            z-index: 99;
+            pointer-events: none;
+        }
+
+        @keyframes explode {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            15% {
+                width: 200vw;
+                height: 200vh;
+                opacity: 1;
+            }
+            100% {
+                width: 300vw;
+                height: 300vh;
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        @keyframes whiteFlash {
+            0% { opacity: 0; }
+            5% { opacity: 1; }
+            15% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-3px, 3px) }
+            40% { transform: translate(-3px, -3px) }
+            60% { transform: translate(3px, 3px) }
+            80% { transform: translate(3px, -3px) }
+            100% { transform: translate(0) }
+        }
+
+        /* Content reveals after explosion */
+        .content-reveal {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 2s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
+    <div class="explosion-overlay"></div>
+    <div class="flash"></div>
 
-    <header>
-        <div class="header-title">
-            <h1>名詞解釋大挑戰 KTV</h1>
-        </div>
-        <div>
-            <a href="index.html" class="nav-btn">🎵 問答題篇</a>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <div class="player-section">
-            <div class="video-container">
-                <audio id="audioPlayer" controls playsinline>
-                    <source src="名詞解釋大挑戰.wav" type="audio/wav">
-                    您的瀏覽器不支援音樂播放。
-                </audio>
-            </div>
-            <button id="btnSkipIntro" class="btn-action">🎤 開始唱</button>
-        </div>
-
-        <div class="lyrics-section">
-            <div class="lyrics-container" id="lyricsContainer">
-                <!-- Lyrics injected here -->
-            </div>
+    <div class="container content-reveal">
+        <h1>⚠️ 檔案已銷毀 ⚠️</h1>
+        <p>[ MISSION ACCOMPLISHED ]</p>
+        <div class="warning">
+            基於 <span>著作權法</span> 保護原則<br>
+            期末考 KTV 伴唱檔案已於考試結束後自動啟動銷毀程序。<br>
+            所有音檔與歌詞紀錄均已徹底抹除。<br><br>
+            感謝您的使用，江湖再見！
         </div>
     </div>
-
-    <script>
-        const lyrics = [
-            { time: 0.00, text: "Ooh... 接下來，我們針對解釋名詞～" },
-            { time: 10.00, text: "這些魔王題，你一定要記熟～" },
-            { time: 18.00, text: "跟著我的節奏背下來，我們現在就開始吧..." },
-            { time: 43.50, text: "名詞一，人際衝突" },
-            { time: 46.00, text: "人跟人在互動之中，有著利益上的不同，或是出現相反的意見。" },
-            { time: 54.00, text: "名詞二，切片" },
-            { time: 59.00, text: "將簡單的事情複雜化，去增加溝通的困難性，以爭取對他有利的條件。" },
-            { time: 66.00, text: "名詞三，刻板印象" },
-            { time: 71.00, text: "對於特定群體，或是事物固定的看法。" },
-            { time: 74.00, text: "名詞四，雙人垂直聯結關係模式 V D L" },
-            { time: 79.00, text: "是主管與部屬之間建立的，圈內人與圈外人的關係。" },
-            { time: 83.50, text: "名詞五，銘印現象" },
-            { time: 86.00, text: "人們到職的第一年，在自己面前展開的工作場所景象的每一件事，" },
-            { time: 94.00, text: "在其後也將會保留下去的特徵。" },
-            { time: 98.00, text: "這一些最初的經驗，往往會去影響他們未來對工作的態度與適應方式。" },
-            { time: 111.00, text: "名詞六，越界角色" },
-            { time: 113.00, text: "扮演著跨越組織邊界，對內與對外溝通的橋樑角色。" },
-            { time: 118.00, text: "名詞七，生涯規劃" },
-            { time: 120.00, text: "用來在工作之中成長，並且得到滿足的有計畫步驟。" },
-            { time: 124.00, text: "名詞八，非典型聘雇關係" },
-            { time: 127.00, text: "它指涉及一種非全時、非長期受聘雇於某一個雇主，" },
-            { time: 132.00, text: "或者一家企業的契約勞動，以及許多不同類型的工作型態。" },
-            { time: 136.00, text: "名詞九，E Q" },
-            { time: 138.00, text: "代表著一個人在情緒方面的管理，以及應用上的整體能力。" },
-            { time: 147.00, text: "名詞十，自我潛能開發" },
-            { time: 149.00, text: "經由對自身去思考問題、與解決問題能力的培養和訓練，" },
-            { time: 154.00, text: "抱持著努力不懈的堅韌毅力，" },
-            { time: 158.00, text: "去達到創造成功人生的另一種途徑。" },
-            { time: 166.00, text: "這十題解釋名詞，你都印在腦海裡了嗎～" },
-            { time: 171.00, text: "反覆聽幾遍，期末考..." },
-            { time: 174.00, text: "讓我們一起 All Pass！" },
-            { time: 177.00, text: "All Pass！一起高分過關～ Oh Yeah～" }
-        ];
-
-        let activeIndex = -1;
-        const player = document.getElementById('audioPlayer');
-        const container = document.getElementById('lyricsContainer');
-
-        function renderLyrics() {
-            container.innerHTML = '';
-            lyrics.forEach((line, index) => {
-                const div = document.createElement('div');
-                div.className = 'lyric-line';
-                div.id = `line-${index}`;
-                div.textContent = line.text;
-                
-                div.addEventListener('click', () => {
-                    player.currentTime = line.time;
-                    player.play();
-                });
-                
-                container.appendChild(div);
-            });
-        }
-
-        function updateLyricsHighlight(currentTime) {
-            let newActiveIndex = -1;
-            for (let i = 0; i < lyrics.length; i++) {
-                if (currentTime >= lyrics[i].time) {
-                    newActiveIndex = i;
-                } else {
-                    break;
-                }
-            }
-
-            if (newActiveIndex !== activeIndex && newActiveIndex !== -1) {
-                if (activeIndex !== -1) {
-                    const oldEl = document.getElementById(`line-${activeIndex}`);
-                    if (oldEl) oldEl.classList.remove('active');
-                }
-                activeIndex = newActiveIndex;
-                const activeEl = document.getElementById(`line-${activeIndex}`);
-                if (activeEl) {
-                    activeEl.classList.add('active');
-                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-        }
-
-        player.addEventListener('timeupdate', () => {
-            updateLyricsHighlight(player.currentTime);
-        });
-
-        document.getElementById('btnSkipIntro').addEventListener('click', () => {
-            if (lyrics[0]) {
-                player.currentTime = Math.max(0, lyrics[0].time - 0.5);
-                player.play();
-            }
-        });
-
-        renderLyrics();
-    </script>
 </body>
 </html>
